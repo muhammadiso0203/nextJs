@@ -21,12 +21,29 @@ interface IResponse {
 
 const Products = () => {
   const [data, setData] = useState<IResponse | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetch("https://dummyjson.com/products")
-      .then((res) => res.json())
-      .then((res: IResponse) => setData(res));
-  }, []);
+   useEffect(() => {
+      setLoading(true);
+      fetch("https://dummyjson.com/products")
+        .then((res) => res.json())
+        .then((res: IResponse) => {
+          setData(res);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }, []);
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <span className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></span>
+          <p className="text-gray-600 font-medium">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6">
